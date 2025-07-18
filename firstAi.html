@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Aid Box AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .aid-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 25px;
+            border: 3px solid #e1e8ed;
+            border-radius: 15px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(231, 76, 60, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border-left: 6px solid #e74c3c;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .condition-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .condition-description {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(231, 76, 60, 0.05);
+            border-radius: 10px;
+        }
+
+        .first-aid-section {
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 2px solid rgba(39, 174, 96, 0.2);
+        }
+
+        .first-aid-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #27ae60;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .first-aid-steps {
+            color: #2c3e50;
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        .emergency-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .emergency-warning-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .emergency-warning-text {
+            color: #c0392b;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e74c3c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            font-size: 1.1em;
+        }
+
+        .quick-search {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .quick-search-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .quick-btn:hover {
+            background: rgba(231, 76, 60, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: #c0392b;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .main-content {
+                padding: 25px;
+            }
+
+            .quick-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .quick-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="aid-icon">🏥</div>
+            <h1>FIRST AID BOX AI</h1>
+            <p class="subtitle">Emergency First Aid Assistant</p>
+        </div>
+
+        <div class="main-content">
+            <div class="search-section">
+                <div class="search-title">
+                    <span>🔍</span>
+                    <span>Search for Medical Condition</span>
+                </div>
+                
+                <form id="condition-form">
+                    <div class="input-group">
+                        <label for="condition">Enter the name of illness or medical condition:</label>
+                        <input type="text" id="condition" name="condition" placeholder="e.g., heart attack, stroke, burns, allergic reaction..." required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span id="btn-text">🚨 Get First Aid Instructions</span>
+                    </button>
+                </form>
+
+                <div class="quick-search">
+                    <div class="quick-search-title">Quick Search Common Emergencies:</div>
+                    <div class="quick-buttons">
+                        <button class="quick-btn" onclick="quickSearch('heart attack')">Heart Attack</button>
+                        <button class="quick-btn" onclick="quickSearch('stroke')">Stroke</button>
+                        <button class="quick-btn" onclick="quickSearch('burns')">Burns</button>
+                        <button class="quick-btn" onclick="quickSearch('choking')">Choking</button>
+                        <button class="quick-btn" onclick="quickSearch('allergic reaction')">Allergic Reaction</button>
+                        <button class="quick-btn" onclick="quickSearch('seizure')">Seizure</button>
+                        <button class="quick-btn" onclick="quickSearch('bleeding')">Severe Bleeding</button>
+                        <button class="quick-btn" onclick="quickSearch('fracture')">Fracture</button>
+                    </div>
+                </div>
+
+                <div id="result-section" class="result-section">
+                    <div id="loading" class="loading-spinner" style="display: none;"></div>
+                    <div id="result-card" class="result-card" style="display: none;">
+                        <div class="condition-title">
+                            <span>🏥</span>
+                            <span id="condition-name">Condition</span>
+                        </div>
+                        <div id="condition-description" class="condition-description"></div>
+                        
+                        <div class="first-aid-section">
+                            <div class="first-aid-title">
+                                <span>🚑</span>
+                                <span>First Aid Steps</span>
+                            </div>
+                            <div id="first-aid-steps" class="first-aid-steps"></div>
+                        </div>
+
+                        <div class="emergency-warning">
+                            <div class="emergency-warning-title">
+                                <span>⚠️</span>
+                                <span>Emergency Warning</span>
+                            </div>
+                            <div class="emergency-warning-text">
+                                Call emergency services (911) immediately if the condition is severe or life-threatening. First aid is temporary care until professional help arrives.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="error-card" class="error-message" style="display: none;">
+                        <strong>Unable to fetch information</strong><br>
+                        Please try again or consult emergency services if this is urgent.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            🚨 <strong>EMERGENCY DISCLAIMER:</strong> This is an AI-powered first aid assistant for educational purposes only. In case of serious medical emergencies, call emergency services (911) immediately. Always seek professional medical help for any serious injury or illness.
+        </div>
+    </div>
+
+    <script>
+        // Form submission functionality
+        document.getElementById('condition-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const conditionInput = document.getElementById('condition').value.toLowerCase().trim();
+            if (conditionInput) {
+                searchCondition(conditionInput);
+            }
+        });
+
+        function quickSearch(condition) {
+            document.getElementById('condition').value = condition;
+            searchCondition(condition);
+        }
+
+        function searchCondition(condition) {
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const resultSection = document.getElementById('result-section');
+            const loading = document.getElementById('loading');
+            const resultCard = document.getElementById('result-card');
+            const errorCard = document.getElementById('error-card');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Searching...';
+            loading.style.display = 'block';
+            resultCard.style.display = 'none';
+            errorCard.style.display = 'none';
+            resultSection.classList.add('show');
+
+            // Get first aid information
+            setTimeout(() => {
+                try {
+                    const firstAidInfo = getFirstAidInfo(condition);
+                    displayFirstAidInfo(firstAidInfo, condition);
+                    
+                    // Show result
+                    loading.style.display = 'none';
+                    resultCard.style.display = 'block';
+                } catch (error) {
+                    console.error('Error getting first aid info:', error);
+                    
+                    // Show error
+                    loading.style.display = 'none';
+                    errorCard.style.display = 'block';
+                }
+                
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.textContent = '🚨 Get First Aid Instructions';
+            }, 1000);
+        }
+
+        function getFirstAidInfo(condition) {
+            // Enhanced first aid database
+            const firstAidDatabase = {
+                'heart attack': {
+                    condition: 'Heart Attack',
+                    description: 'A heart attack occurs when blood flow to part of the heart is blocked. Common symptoms include chest pain, shortness of breath, nausea, and sweating.',
+                    firstAidSteps: `1. Call 911 immediately
+2. Have the person sit down and rest
+3. Give aspirin if available and the person is not allergic (chew 325mg)
+4. Loosen tight clothing around neck and chest
+5. Be prepared to perform CPR if the person becomes unconscious
+6. Monitor breathing and pulse
+7. Stay with the person until help arrives
+8. Keep the person calm and reassured`
+                },
+                'stroke': {
+                    condition: 'Stroke',
+                    description: 'A stroke occurs when blood supply to the brain is interrupted. Signs include sudden numbness, confusion, trouble speaking, or severe headache. Use F.A.S.T. test: Face drooping, Arm weakness, Speech difficulty, Time to call 911.',
+                    firstAidSteps: `1. Call 911 immediately
+2. Note the time symptoms started
+3. Keep the person calm and comfortable
+4. Do not give food or water
+5. If conscious, help them lie down with head and shoulders slightly raised
+6. If unconscious, place in recovery position
+7. Monitor breathing and pulse
+8. Do not give medication unless prescribed`
+                },
+                'burns': {
+                    condition: 'Burns',
+                    description: 'Burns can be caused by heat, chemicals, electricity, or radiation. First-degree burns affect only the outer layer of skin. Second-degree burns go deeper. Third-degree burns require immediate medical attention.',
+                    firstAidSteps: `1. Remove from heat source safely
+2. Cool the burn with running water for 10-20 minutes
+3. Remove jewelry and loose clothing before swelling occurs
+4. Cover with sterile gauze or clean cloth
+5. Do not use ice, butter, or ointments
+6. For severe burns covering large areas, call 911
+7. Treat for shock if necessary
+8. Do not break blisters if they form`
+                },
+                'choking': {
+                    condition: 'Choking',
+                    description: 'Choking occurs when an object blocks the throat or windpipe, preventing normal breathing. The person may be unable to speak, cough, or breathe.',
+                    firstAidSteps: `1. Ask "Are you choking?" If they can speak or cough, encourage coughing
+2. If unable to cough, speak, or breathe, perform back blows
+3. Give 5 sharp back blows between shoulder blades with heel of hand
+4. If unsuccessful, perform abdominal thrusts (Heimlich maneuver)
+5. Stand behind person, place hands above navel
+6. Give 5 quick upward thrusts
+7. Alternate between 5 back blows and 5 abdominal thrusts
+8. Call 911 if object cannot be dislodged`
+                },
+                'allergic reaction': {
+                    condition: 'Allergic Reaction',
+                    description: 'An allergic reaction can range from mild (skin rash) to severe (anaphylaxis). Severe reactions can cause difficulty breathing, swelling, and shock.',
+                    firstAidSteps: `1. Call 911 for severe reactions (difficulty breathing, swelling of face/throat)
+2. Remove or avoid the allergen if known
+3. Help person use their epinephrine auto-injector if available
+4. Keep person lying down with legs elevated
+5. Loosen tight clothing
+6. Do not give anything by mouth
+7. Be prepared to perform CPR if breathing stops
+8. Monitor breathing and pulse continuously`
+                },
+                'seizure': {
+                    condition: 'Seizure',
+                    description: 'A seizure is a sudden, uncontrolled electrical disturbance in the brain. Most seizures end on their own within 1-2 minutes.',
+                    firstAidSteps: `1. Stay calm and time the seizure
+2. Keep person safe from injury - cushion their head
+3. Clear area of hard or sharp objects
+4. Do not hold person down or restrain them
+5. Do not put anything in their mouth
+6. Turn person on their side after seizure ends
+7. Stay with person until fully conscious
+8. Call 911 if seizure lasts more than 5 minutes or person is injured`
+                },
+                'bleeding': {
+                    condition: 'Severe Bleeding',
+                    description: 'Severe bleeding can lead to shock and death if not controlled quickly. External bleeding is visible, while internal bleeding may not be obvious.',
+                    firstAidSteps: `1. Call 911 immediately for severe bleeding
+2. Apply direct pressure with clean cloth or bandage
+3. Do not remove embedded objects - stabilize them
+4. Elevate injured area above heart level if possible
+5. If blood soaks through, add more layers (don't remove original)
+6. Apply pressure to pressure points if bleeding continues
+7. Watch for signs of shock (pale skin, rapid pulse)
+8. Keep person warm and lying down`
+                },
+                'fracture': {
+                    condition: 'Fracture (Broken Bone)',
+                    description: 'A fracture is a break in a bone. It can be closed (skin intact) or open (bone protruding through skin). Open fractures are medical emergencies.',
+                    firstAidSteps: `1. Do not move the person unless in immediate danger
+2. Call 911 for severe fractures or if bone is protruding
+3. Control any bleeding with direct pressure around the wound
+4. Immobilize the injured area - support above and below injury
+5. Apply ice wrapped in cloth to reduce swelling
+6. Do not try to realign the bone or push it back in
+7. Check circulation below the injury (pulse, warmth, color)
+8. Treat for shock if necessary`
+                },
+                'unconscious': {
+                    condition: 'Unconscious Person',
+                    description: 'An unconscious person is not responsive and may not be breathing normally. This is a medical emergency.',
+                    firstAidSteps: `1. Check for responsiveness - tap shoulders and shout
+2. Call 911 immediately
+3. Check for breathing - look, listen, feel for 10 seconds
+4. If breathing normally, place in recovery position
+5. If not breathing normally, begin CPR
+6. Clear airway of visible obstructions
+7. Continue CPR until help arrives
+8. Do not leave person alone`
+                },
+                'poisoning': {
+                    condition: 'Poisoning',
+                    description: 'Poisoning occurs when harmful substances enter the body. This can be through ingestion, inhalation, injection, or skin contact.',
+                    firstAidSteps: `1. Call Poison Control: 1-800-222-1222 (US) or 911
+2. Try to identify the poison and amount consumed
+3. Do not induce vomiting unless instructed
+4. If poison is on skin, rinse with water for 15-20 minutes
+5. If inhaled, move person to fresh air
+6. If in eyes, flush with water for 15 minutes
+7. Save poison container or label
+8. Monitor breathing and consciousness`
+                }
+            };
+
+            // Normalize the condition input
+            const normalizedCondition = condition.toLowerCase().trim();
+            
+            // Check for exact matches first
+            if (firstAidDatabase[normalizedCondition]) {
+                return firstAidDatabase[normalizedCondition];
+            }
+            
+            // Check for partial matches
+            for (let key in firstAidDatabase) {
+                if (normalizedCondition.includes(key) || key.includes(normalizedCondition)) {
+                    return firstAidDatabase[key];
+                }
+            }
+            
+            // Check for alternative terms
+            const alternativeTerms = {
+                'mi': 'heart attack',
+                'myocardial infarction': 'heart attack',
+                'cardiac arrest': 'heart attack',
+                'cva': 'stroke',
+                'cerebrovascular accident': 'stroke',
+                'anaphylaxis': 'allergic reaction',
+                'asthma attack': 'allergic reaction',
+                'convulsion': 'seizure',
+                'epilepsy': 'seizure',
+                'broken bone': 'fracture',
+                'compound fracture': 'fracture',
+                'laceration': 'bleeding',
+                'hemorrhage': 'bleeding',
+                'unconsciousness': 'unconscious',
+                'fainting': 'unconscious',
+                'overdose': 'poisoning'
+            };
+            
+            for (let alt in alternativeTerms) {
+                if (normalizedCondition.includes(alt)) {
+                    return firstAidDatabase[alternativeTerms[alt]];
+                }
+            }
+            
+            // Default response for unknown conditions
+            return {
+                condition: condition.charAt(0).toUpperCase() + condition.slice(1),
+                description: 'A medical condition that may require immediate attention. When in doubt, it\'s always better to seek professional medical help.',
+                firstAidSteps: `1. Assess the situation for safety
+2. Check if person is conscious and breathing
+3. Call 911 if condition appears serious
+4. Provide comfort and reassurance
+5. Do not move the person unless absolutely necessary
+6. Monitor vital signs (breathing, pulse, consciousness)
+7. Keep person warm and comfortable
+8. Stay with person until help arrives`
+            };
+        }
+
+        function displayFirstAidInfo(info, searchTerm) {
+            document.getElementById('condition-name').textContent = info.condition;
+            document.getElementById('condition-description').textContent = info.description;
+            
+            // Format the first aid steps with proper line breaks
+            const formattedSteps = info.firstAidSteps.replace(/\n/g, '<br>');
+            document.getElementById('first-aid-steps').innerHTML = formattedSteps;
+        }
+
+        // Add interactive effects
+        document.getElementById('condition').addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '#e1e8ed';
+            }
+        });
+
+        // Add Enter key support
+        document.getElementById('condition').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('condition-form').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Add focus effect
+        document.getElementById('condition').addEventListener('focus', function() {
+            this.style.borderColor = '#e74c3c';
+        });
+
+        document.getElementById('condition').addEventListener('blur', function() {
+            if (this.value.length === 0) {
+                this.style.borderColor = '#e1e8ed';
+            }
+        });
+    </script>
+</body>
+</html>
