@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .health-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            margin: 0 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .tab-button:hover {
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Symptom Checker Styles */
+        .symptom-checker {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .result-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagnosis-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .diagnosis-text {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .treatment-section {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .treatment-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .treatment-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .chat-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 8px;
+        }
+
+        .bot-message {
+            background: white;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bot-message:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .prompt-message {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+            font-size: 0.9em;
+        }
+
+        .loading-message {
+            color: #667eea;
+            font-style: italic;
+            margin-right: auto;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 10px 15px;
+            border-radius: 15px;
+        }
+
+        .chat-form {
+            display: flex;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            gap: 10px;
+        }
+
+        .chat-form input {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-form input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-form button {
+            padding: 15px 25px;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .chat-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .tabs {
+                flex-direction: column;
+                border-radius: 15px;
+            }
+
+            .tab-button {
+                margin: 5px 0;
+                border-radius: 10px;
+            }
+
+            .chatbot-container {
+                height: 500px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="health-icon">🏥</div>
+            <h1>Healthcare Assistant</h1>
+            <p class="subtitle">Your AI-powered health companion</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('symptom-checker')">
+                🔍 Symptom Checker
+            </button>
+            <button class="tab-button" onclick="showTab('chatbot')">
+                💬 Chat with Dr. K
+            </button>
+        </div>
+
+        <!-- Symptom Checker Tab -->
+        <div id="symptom-checker" class="tab-content active">
+            <div class="symptom-checker">
+                <form id="symptom-form">
+                    <div class="input-group">
+                        <label for="symptom">What symptom are you experiencing?</label>
+                        <input type="text" id="symptom" name="symptom" placeholder="e.g., headache, cough, fever..." required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span id="btn-text">Check Diagnosis</span>
+                    </button>
+                </form>
+
+                <div id="result-section" class="result-section">
+                    <div id="loading" class="loading-spinner" style="display: none;"></div>
+                    <div id="result-card" class="result-card" style="display: none;">
+                        <div class="diagnosis-title">
+                            <span class="diagnosis-icon">🔍</span>
+                            <span>Diagnosis</span>
+                        </div>
+                        <div id="result" class="diagnosis-text"></div>
+                        
+                        <div id="treatment-section" class="treatment-section">
+                            <div class="treatment-title">
+                                <span>💊</span>
+                                <span>Recommended Treatment</span>
+                            </div>
+                            <div id="treatment" class="treatment-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbot Tab -->
+        <div id="chatbot" class="tab-content">
+            <div class="chatbot-container">
+                <div class="chat-header">
+                    <div>🩺 Dr. K - Healthcare Assistant</div>
+                </div>
+                <div id="chat-content" class="chat-content">
+                    <div class="prompt-message">
+                        💡 <strong>Tips:</strong> Ask me anything related to healthcare. For example: "What are the symptoms of flu?" or "How can I maintain a healthy diet?"
+                    </div>
+                </div>
+                <form id="chat-form" class="chat-form">
+                    <input type="text" id="user-input" placeholder="Type your healthcare question..." autocomplete="off">
+                    <button type="submit" id="chat-submit">Send</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ <strong>Important:</strong> This tool is for informational purposes only. Always consult with a healthcare professional for proper medical advice, diagnosis, and treatment.
+        </div>
+    </div>
+
+    <script>
+        // Medical knowledge database
+        const medicalDatabase = {
+            'headache': {
+                diagnosis: 'Based on your symptoms, you may be experiencing tension headaches, which are the most common type. These can be caused by stress, poor posture, dehydration, or eye strain.',
+                treatment: 'Rest in a quiet, dark room. Apply a cool compress to your forehead. Stay hydrated and consider over-the-counter pain relievers like ibuprofen or acetaminophen. If headaches persist or worsen, consult a healthcare provider.'
+            },
+            'cough': {
+                diagnosis: 'A persistent cough could indicate a viral infection, allergies, or respiratory irritation. Dry coughs are often caused by viral infections, while productive coughs may indicate bacterial infections.',
+                treatment: 'Stay hydrated, use a humidifier, try throat lozenges or honey, and get plenty of rest. Avoid smoke and irritants. If cough persists for more than 2 weeks or is accompanied by fever, see a doctor.'
+            },
+            'fever': {
+                diagnosis: 'Fever is your body\'s natural response to infection. It typically indicates your immune system is fighting off a virus or bacteria.',
+                treatment: 'Rest, drink plenty of fluids, and take fever reducers like acetaminophen or ibuprofen. Monitor your temperature regularly. Seek immediate medical attention if fever exceeds 103°F (39.4°C) or persists for more than 3 days.'
+            },
+            'sore throat': {
+                diagnosis: 'A sore throat can be caused by viral infections (most common), bacterial infections like strep throat, or environmental irritants.',
+                treatment: 'Gargle with warm salt water, drink warm liquids like tea with honey, use throat lozenges, and rest your voice. If accompanied by high fever, difficulty swallowing, or white spots on throat, see a doctor.'
+            },
+            'nausea': {
+                diagnosis: 'Nausea can result from various causes including motion sickness, food poisoning, stress, pregnancy, or medication side effects.',
+                treatment: 'Eat small, bland meals (crackers, toast, rice), stay hydrated with clear fluids, try ginger tea or ginger candies, and rest. Avoid strong odors and greasy foods. If persistent or severe, consult a healthcare provider.'
+            },
+            'stomach ache': {
+                diagnosis: 'Stomach pain can be caused by indigestion, gas, food intolerance, stress, or more serious conditions depending on severity and location.',
+                treatment: 'Eat light, bland foods, stay hydrated, apply a warm compress to your abdomen, and avoid spicy or fatty foods. Consider over-the-counter antacids. If pain is severe or persistent, seek medical attention.'
+            },
+            'diarrhea': {
+                diagnosis: 'Diarrhea is often caused by viral or bacterial infections, food poisoning, stress, or certain medications.',
+                treatment: 'Stay hydrated with clear fluids, eat bland foods like bananas, rice, applesauce, and toast (BRAT diet), and rest. Avoid dairy and fatty foods. If severe or lasts more than 2 days, consult a doctor.'
+            },
+            'fatigue': {
+                diagnosis: 'Fatigue can result from poor sleep, stress, dehydration, anemia, or underlying health conditions.',
+                treatment: 'Ensure adequate sleep (7-9 hours), stay hydrated, eat balanced meals, exercise regularly, and manage stress. If fatigue persists despite good self-care, see a healthcare provider.'
+            },
+            'back pain': {
+                diagnosis: 'Back pain is commonly caused by muscle strain, poor posture, or minor injuries. It can also result from prolonged sitting or lifting heavy objects incorrectly.',
+                treatment: 'Apply ice for first 24-48 hours, then heat. Gentle stretching and movement can help. Over-the-counter pain relievers may provide relief. If pain is severe or persists, consult a healthcare provider.'
+            },
+            'cold': {
+                diagnosis: 'Common cold symptoms include runny nose, sneezing, mild cough, and sometimes low-grade fever. It\'s caused by viral infections.',
+                treatment: 'Rest, drink plenty of fluids, use a humidifier, and try saline nasal drops. Over-the-counter medications can help with symptoms. Most colds resolve within 7-10 days.'
+            }
+        };
+
+        // Chat responses database
+        const chatResponses = {
+            greetings: [
+                "Hello! I'm Dr. K, your healthcare assistant. How can I help you today?",
+                "Hi there! I'm here to help with your healthcare questions. What would you like to know?",
+                "Welcome! I'm Dr. K. Feel free to ask me about symptoms, health advice, or general wellness questions."
+            ],
+            common_questions: {
+                'flu symptoms': 'Common flu symptoms include fever, body aches, fatigue, cough, sore throat, runny nose, and sometimes nausea. The flu typically lasts 3-7 days.',
+                'healthy diet': 'A healthy diet includes plenty of fruits and vegetables, whole grains, lean proteins, and healthy fats. Limit processed foods, sugar, and excessive sodium.',
+                'exercise': 'Adults should aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity per week, plus strength training twice a week.',
+                'sleep': 'Most adults need 7-9 hours of quality sleep per night. Good sleep hygiene includes a consistent schedule, cool dark room, and avoiding screens before bed.',
+                'hydration': 'Aim for about 8 glasses of water daily, more if you\'re active or in hot weather. Signs of good hydration include pale yellow urine.',
+                'stress management': 'Effective stress management includes regular exercise, adequate sleep, healthy eating, meditation, deep breathing, and social support.'
+            }
+        };
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Symptom Checker Functionality
+        document.getElementById('symptom-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const symptomInput = document.getElementById('symptom').value.toLowerCase().trim();
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const resultSection = document.getElementById('result-section');
+            const loading = document.getElementById('loading');
+            const resultCard = document.getElementById('result-card');
+
+            if (!symptomInput) {
+                alert('Please enter a symptom');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Analyzing...';
+            loading.style.display = 'block';
+            resultCard.style.display = 'none';
+            resultSection.classList.add('show');
+
+            // Simulate processing delay for better UX
+            setTimeout(() => {
+                const diagnosis = getDiagnosis(symptomInput);
+                displayResult(diagnosis);
+                
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.textContent = 'Check Diagnosis';
+                loading.style.display = 'none';
+                resultCard.style.display = 'block';
+            }, 1500);
+        });
+
+        function getDiagnosis(symptom) {
+            // Clean and normalize input
+            const cleanSymptom = symptom.toLowerCase().trim();
+            
+            // Check for exact matches first
+            if (medicalDatabase[cleanSymptom]) {
+                return medicalDatabase[cleanSymptom];
+            }
+            
+            // Check for partial matches
+            for (let condition in medicalDatabase) {
+                if (cleanSymptom.includes(condition) || condition.includes(cleanSymptom)) {
+                    return medicalDatabase[condition];
+                }
+            }
+            
+            // Check for related terms
+            const symptomMappings = {
+                'head pain': 'headache',
+                'migraine': 'headache',
+                'temperature': 'fever',
+                'high temperature': 'fever',
+                'throwing up': 'nausea',
+                'vomiting': 'nausea',
+                'stomach pain': 'stomach ache',
+                'abdominal pain': 'stomach ache',
+                'runny nose': 'cold',
+                'sneezing': 'cold',
+                'tired': 'fatigue',
+                'exhausted': 'fatigue',
+                'loose stool': 'diarrhea',
+                'throat pain': 'sore throat'
+            };
+            
+            for (let term in symptomMappings) {
+                if (cleanSymptom.includes(term)) {
+                    return medicalDatabase[symptomMappings[term]];
+                }
+            }
+            
+            // Default response for unknown symptoms
+            return {
+                diagnosis: 'I\'m not able to provide a specific diagnosis for this symptom. Symptoms can have various causes and may require professional evaluation.',
+                treatment: 'Please consult with a healthcare professional for proper evaluation and treatment. They can provide a thorough examination and appropriate care for your specific situation.'
+            };
+        }
+
+        function displayResult(diagnosis) {
+            const resultDiv = document.getElementById('result');
+            const treatmentDiv = document.getElementById('treatment');
+            
+            resultDiv.textContent = diagnosis.diagnosis;
+            treatmentDiv.textContent = diagnosis.treatment;
+        }
+
+        // Chatbot Functionality
+        const chatContent = document.getElementById("chat-content");
+        const chatForm = document.getElementById("chat-form");
+        const userInput = document.getElementById("user-input");
+        const chatSubmitBtn = document.getElementById("chat-submit");
+
+        function displayBotMessage(message) {
+            const botMessageElement = document.createElement("div");
+            botMessageElement.textContent = message;
+            botMessageElement.classList.add("message", "bot-message");
+            botMessageElement.title = "Click to copy message";
+            botMessageElement.addEventListener("click", () => {
+                navigator.clipboard.writeText(message).then(() => {
+                    showNotification("Message copied!");
+                }).catch(err => {
+                    console.error("Error copying text: ", err);
+                });
+            });
+            chatContent.appendChild(botMessageElement);
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+
+        function displayUserMessage(message) {
+            const userMessageElement = document.createElement("div");
+            userMessageElement.textContent = message;
+            userMessageElement.classList.add("message", "user-message");
+            chatContent.appendChild(userMessageElement);
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+
+        function showLoading() {
+            const loadingElement = document.createElement("div");
+            loadingElement.textContent = "Dr. K is thinking...";
+            loadingElement.id = "loading-message";
+            loadingElement.classList.add("message", "loading-message");
+            chatContent.appendChild(loadingElement);
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+
+        function hideLoading() {
+            const loadingElement = document.getElementById("loading-message");
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement("div");
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+                font-size: 14px;
+                font-weight: 500;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 2000);
+        }
+
+        function getChatResponse(userMessage) {
+            const message = userMessage.toLowerCase().trim();
+            
+            // Check for greetings
+            if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return chatResponses.greetings[Math.floor(Math.random() * chatResponses.greetings.length)];
+            }
+            
+            // Check for common questions
+            for (let question in chatResponses.common_questions) {
+                if (message.includes(question)) {
+                    return chatResponses.common_questions[question];
+                }
+            }
+            
+            // Check for symptoms in chat
+            for (let symptom in medicalDatabase) {
+                if (message.includes(symptom)) {
+                    const info = medicalDatabase[symptom];
+                    return `Regarding ${symptom}: ${info.diagnosis} For treatment: ${info.treatment}`;
+                }
+            }
+            
+            // Check for thank you
+            if (message.includes('thank') || message.includes('thanks')) {
+                return "You're welcome! I'm here to help with any healthcare questions you may have. Remember to consult with healthcare professionals for serious concerns.";
+            }
+            
+            // Default response
+            return "I'm here to help with healthcare questions. You can ask me about symptoms, general health advice, nutrition, exercise, or wellness tips. For specific medical concerns, please consult with a healthcare professional.";
+        }
+
+        // Initialize chatbot
+        window.addEventListener('load', () => {
+            displayBotMessage("Hello! I'm Dr. K, your AI healthcare assistant. I can help you with medical questions, symptoms, health advice, and general wellness information. How can I assist you today?");
+        });
+
+        chatForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            // Disable form
+            chatSubmitBtn.disabled = true;
+            userInput.disabled = true;
+
+            // Display user message
+            displayUserMessage(userMessage);
+            userInput.value = "";
+
+            // Show loading
+            showLoading();
+
+            // Simulate thinking time
+            setTimeout(() => {
+                const botResponse = getChatResponse(userMessage);
+                
+                // Hide loading and show response
+                hideLoading();
+                displayBotMessage(botResponse);
+                
+                // Re-enable form
+                chatSubmitBtn.disabled = false;
+                userInput.disabled = false;
+                userInput.focus();
+            }, 1000);
+        });
+
+        // Add interactive effects
+        document.getElementById('symptom').addEventListener('input', function() {
+            if (this.value.length > 0) {
+                this.style.borderColor = '#667eea';
+            } else {
+                this.style.borderColor = '#e1e8ed';
+            }
+        });
+
+        // Allow Enter key to submit chat
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey && !chatSubmitBtn.disabled) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
