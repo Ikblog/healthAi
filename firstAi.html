@@ -141,96 +141,6 @@
             transform: none;
         }
 
-        .result-section {
-            margin-top: 40px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .result-section.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .result-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            border-left: 6px solid #e74c3c;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .condition-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #e74c3c;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .condition-description {
-            font-size: 1.1em;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: rgba(231, 76, 60, 0.05);
-            border-radius: 10px;
-        }
-
-        .first-aid-section {
-            background: rgba(39, 174, 96, 0.1);
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 20px;
-            border: 2px solid rgba(39, 174, 96, 0.2);
-        }
-
-        .first-aid-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: #27ae60;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .first-aid-steps {
-            color: #2c3e50;
-            line-height: 1.7;
-            font-size: 1.05em;
-        }
-
-        .emergency-warning {
-            background: rgba(231, 76, 60, 0.1);
-            border: 2px solid rgba(231, 76, 60, 0.3);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .emergency-warning-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #e74c3c;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .emergency-warning-text {
-            color: #c0392b;
-            font-weight: 500;
-        }
-
         .loading-spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #e74c3c;
@@ -295,14 +205,187 @@
             box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
         }
 
-        .error-message {
+        /* Modal Dialog Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: fadeInOverlay 0.3s ease-in-out;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-dialog {
+            background: white;
+            border-radius: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            width: 700px;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideInModal 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideInModal {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(-50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .condition-description {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(231, 76, 60, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .first-aid-section {
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(39, 174, 96, 0.2);
+        }
+
+        .first-aid-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #27ae60;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .first-aid-steps {
+            color: #2c3e50;
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        .emergency-warning {
             background: rgba(231, 76, 60, 0.1);
             border: 2px solid rgba(231, 76, 60, 0.3);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
-            margin-top: 20px;
             text-align: center;
+        }
+
+        .emergency-warning-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .emergency-warning-text {
             color: #c0392b;
+            font-weight: 500;
+        }
+
+        .loading-modal {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .error-modal {
+            text-align: center;
+            padding: 40px;
+            color: #c0392b;
+        }
+
+        .error-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            font-size: 1.1em;
+            line-height: 1.5;
         }
 
         /* Responsive Design */
@@ -319,6 +402,19 @@
                 padding: 25px;
             }
 
+            .modal-dialog {
+                width: 95%;
+                margin: 10px;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
             .quick-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -328,6 +424,25 @@
                 width: 100%;
                 max-width: 300px;
             }
+        }
+
+        /* Scrollbar styling for modal */
+        .modal-dialog::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-dialog::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .modal-dialog::-webkit-scrollbar-thumb {
+            background: #e74c3c;
+            border-radius: 10px;
+        }
+
+        .modal-dialog::-webkit-scrollbar-thumb:hover {
+            background: #c0392b;
         }
     </style>
 </head>
@@ -369,39 +484,6 @@
                         <button class="quick-btn" onclick="quickSearch('fracture')">Fracture</button>
                     </div>
                 </div>
-
-                <div id="result-section" class="result-section">
-                    <div id="loading" class="loading-spinner" style="display: none;"></div>
-                    <div id="result-card" class="result-card" style="display: none;">
-                        <div class="condition-title">
-                            <span>🏥</span>
-                            <span id="condition-name">Condition</span>
-                        </div>
-                        <div id="condition-description" class="condition-description"></div>
-                        
-                        <div class="first-aid-section">
-                            <div class="first-aid-title">
-                                <span>🚑</span>
-                                <span>First Aid Steps</span>
-                            </div>
-                            <div id="first-aid-steps" class="first-aid-steps"></div>
-                        </div>
-
-                        <div class="emergency-warning">
-                            <div class="emergency-warning-title">
-                                <span>⚠️</span>
-                                <span>Emergency Warning</span>
-                            </div>
-                            <div class="emergency-warning-text">
-                                Call emergency services (911) immediately if the condition is severe or life-threatening. First aid is temporary care until professional help arrives.
-                            </div>
-                        </div>
-                    </div>
-                    <div id="error-card" class="error-message" style="display: none;">
-                        <strong>Unable to fetch information</strong><br>
-                        Please try again or consult emergency services if this is urgent.
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -410,7 +492,82 @@
         </div>
     </div>
 
+    <!-- Modal Dialog -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🏥</span>
+                    <span id="modal-condition-name">First Aid Information</span>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Loading State -->
+                <div id="loading-content" class="loading-modal" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Searching for first aid information...</div>
+                </div>
+
+                <!-- Error State -->
+                <div id="error-content" class="error-modal" style="display: none;">
+                    <div class="error-icon">⚠️</div>
+                    <div class="error-title">Unable to fetch information</div>
+                    <div class="error-message">Please try again or consult emergency services if this is urgent.</div>
+                </div>
+
+                <!-- Result Content -->
+                <div id="result-content" style="display: none;">
+                    <div id="modal-condition-description" class="condition-description"></div>
+                    
+                    <div class="first-aid-section">
+                        <div class="first-aid-title">
+                            <span>🚑</span>
+                            <span>First Aid Steps</span>
+                        </div>
+                        <div id="modal-first-aid-steps" class="first-aid-steps"></div>
+                    </div>
+
+                    <div class="emergency-warning">
+                        <div class="emergency-warning-title">
+                            <span>⚠️</span>
+                            <span>Emergency Warning</span>
+                        </div>
+                        <div class="emergency-warning-text">
+                            Call emergency services (911) immediately if the condition is severe or life-threatening. First aid is temporary care until professional help arrives.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Modal functionality
+        function openModal() {
+            document.getElementById('modal-overlay').classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
         // Form submission functionality
         document.getElementById('condition-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -429,40 +586,46 @@
         function searchCondition(condition) {
             const submitBtn = document.getElementById('submit-btn');
             const btnText = document.getElementById('btn-text');
-            const resultSection = document.getElementById('result-section');
-            const loading = document.getElementById('loading');
-            const resultCard = document.getElementById('result-card');
-            const errorCard = document.getElementById('error-card');
-
-            // Show loading state
+            
+            // Show loading state in button
             submitBtn.disabled = true;
             btnText.textContent = 'Searching...';
-            loading.style.display = 'block';
-            resultCard.style.display = 'none';
-            errorCard.style.display = 'none';
-            resultSection.classList.add('show');
+
+            // Open modal and show loading
+            openModal();
+            showModalContent('loading');
 
             // Get first aid information
             setTimeout(() => {
                 try {
                     const firstAidInfo = getFirstAidInfo(condition);
                     displayFirstAidInfo(firstAidInfo, condition);
-                    
-                    // Show result
-                    loading.style.display = 'none';
-                    resultCard.style.display = 'block';
+                    showModalContent('result');
                 } catch (error) {
                     console.error('Error getting first aid info:', error);
-                    
-                    // Show error
-                    loading.style.display = 'none';
-                    errorCard.style.display = 'block';
+                    showModalContent('error');
                 }
                 
                 // Reset button state
                 submitBtn.disabled = false;
                 btnText.textContent = '🚨 Get First Aid Instructions';
             }, 1000);
+        }
+
+        function showModalContent(type) {
+            // Hide all content sections
+            document.getElementById('loading-content').style.display = 'none';
+            document.getElementById('error-content').style.display = 'none';
+            document.getElementById('result-content').style.display = 'none';
+
+            // Show the requested content
+            if (type === 'loading') {
+                document.getElementById('loading-content').style.display = 'block';
+            } else if (type === 'error') {
+                document.getElementById('error-content').style.display = 'block';
+            } else if (type === 'result') {
+                document.getElementById('result-content').style.display = 'block';
+            }
         }
 
         function getFirstAidInfo(condition) {
@@ -647,12 +810,12 @@
         }
 
         function displayFirstAidInfo(info, searchTerm) {
-            document.getElementById('condition-name').textContent = info.condition;
-            document.getElementById('condition-description').textContent = info.description;
+            document.getElementById('modal-condition-name').textContent = info.condition;
+            document.getElementById('modal-condition-description').textContent = info.description;
             
             // Format the first aid steps with proper line breaks
             const formattedSteps = info.firstAidSteps.replace(/\n/g, '<br>');
-            document.getElementById('first-aid-steps').innerHTML = formattedSteps;
+            document.getElementById('modal-first-aid-steps').innerHTML = formattedSteps;
         }
 
         // Add interactive effects
@@ -685,3 +848,4 @@
     </script>
 </body>
 </html>
+
