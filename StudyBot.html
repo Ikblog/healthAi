@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBot - Your Personal Tutor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #000000de;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .study-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.1);
+            background: white;
+            overflow: hidden;
+        }
+        
+        .chatbox {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+        }
+        
+        .chat-message {
+            padding: 16px 20px;
+            border-radius: 16px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            font-size: 15px;
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 6px;
+            margin-left: auto;
+        }
+        
+        .assistant-message {
+            align-self: flex-start;
+            background: white;
+            color: #333;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 6px;
+            margin-right: auto;
+            position: relative;
+        }
+        
+        .assistant-message::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 8px solid white;
+        }
+        
+        .input-area {
+            padding: 24px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .input-area input {
+            width: 100%;
+            padding: 16px 24px;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: #f8fafc;
+        }
+        
+        .input-area input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .input-area input::placeholder {
+            color: #64748b;
+        }
+        
+        .send-button {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2, #5a4b8c);
+        }
+        
+        .send-button:active {
+            transform: translateY(0);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .study-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #667eea;
+            border-radius: 20px;
+            background: white;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .quick-prompts {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-prompt {
+            padding: 8px 16px;
+            background: #e8f0fe;
+            color: #667eea;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .quick-prompt:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-style: italic;
+            padding: 16px 20px;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .quiz-container {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0c4a6e;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .quiz-option {
+            padding: 10px 16px;
+            background: white;
+            border: 2px solid #e0f2fe;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            border-color: #0ea5e9;
+            background: #f0f9ff;
+        }
+        
+        .quiz-option.selected {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+        
+        .quiz-option.correct {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .quiz-option.incorrect {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        .math-container {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .math-problem {
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+            color: #92400e;
+        }
+        
+        .math-solution {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .offline-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .dialog-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dialog-icon {
+            font-size: 48px;
+            color: #ef4444;
+            margin-bottom: 16px;
+        }
+        
+        .dialog-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+        
+        .dialog-message {
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .dialog-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .dialog-button:hover {
+            background: #5a67d8;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .chat-message {
+                max-width: 90%;
+            }
+            
+            .input-area {
+                padding: 16px;
+            }
+            
+            .quick-prompts {
+                flex-direction: column;
+            }
+            
+            .dialog-content {
+                margin: 20px;
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Offline Dialog -->
+    <div id="offlineDialog" class="offline-dialog">
+        <div class="dialog-content">
+            <div class="dialog-icon">
+                <i class="material-icons">wifi_off</i>
+            </div>
+            <div class="dialog-title">No Internet Connection</div>
+            <div class="dialog-message">
+                StudyBot requires an internet connection to provide you with the best learning experience. Please check your connection and try again.
+            </div>
+            <button class="dialog-button" onclick="checkConnection()">Try Again</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>
+                    <div class="study-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    StudyBot - Your Personal Tutor
+                </h1>
+                <p>✅ Great for secondary & university students</p>
+            </div>
+        </div>
+        
+        <div id="chatbox" class="chatbox">
+            <div class="chat-message assistant-message">
+                <div>🎓 Welcome to StudyBot! I'm your personal tutor ready to help you excel in your studies. I can assist you with:</div>
+                <div style="margin-top: 12px;">
+                    📚 <strong>Explanations:</strong> Break down complex topics into easy-to-understand concepts<br>
+                    🧠 <strong>Quizzes:</strong> Test your knowledge with interactive questions<br>
+                    🔢 <strong>Math Solving:</strong> Step-by-step solutions for math problems<br>
+                    📝 <strong>Test Prep:</strong> Practice questions and study strategies<br>
+                    💡 <strong>Study Tips:</strong> Effective learning techniques and methods
+                </div>
+                <div class="quick-prompts">
+                    <button class="quick-prompt" onclick="setPrompt('Explain photosynthesis in simple terms')">📚 Explain a Topic</button>
+                    <button class="quick-prompt" onclick="setPrompt('Create a quiz about World War 2')">🧠 Generate Quiz</button>
+                    <button class="quick-prompt" onclick="setPrompt('Solve: 2x + 5 = 15')">🔢 Solve Math</button>
+                    <button class="quick-prompt" onclick="setPrompt('Help me prepare for my biology exam')">📝 Test Prep</button>
+                    <button class="quick-prompt" onclick="setPrompt('Give me study tips for better memory')">💡 Study Tips</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <div class="input-container">
+                <input id="chatInput" type="text" placeholder="Ask me anything about your studies..." />
+            </div>
+            <button id="sendButton" class="send-button">
+                <i class="material-icons">send</i>
+            </button>
+        </div>
+        
+        <div id="typingIndicator" class="typing-indicator">
+            <div class="spinner"></div>
+            <span>StudyBot is thinking...</span>
+        </div>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById("sendButton");
+        const chatInput = document.getElementById('chatInput');
+        const chatbox = document.getElementById('chatbox');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const offlineDialog = document.getElementById('offlineDialog');
+
+        let isOnline = navigator.onLine;
+
+        // Check internet connectivity
+        function checkConnection() {
+            if (navigator.onLine) {
+                offlineDialog.style.display = 'none';
+                isOnline = true;
+            } else {
+                offlineDialog.style.display = 'flex';
+                isOnline = false;
+            }
+        }
+
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            isOnline = true;
+            offlineDialog.style.display = 'none';
+        });
+
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            offlineDialog.style.display = 'flex';
+        });
+
+        // Initial connection check
+        checkConnection();
+
+        function setPrompt(prompt) {
+            chatInput.value = prompt;
+            chatInput.focus();
+        }
+
+        async function displayMessage(message, isUser) {
+            const msgElem = document.createElement('div');
+            msgElem.className = `chat-message ${isUser ? 'user-message' : 'assistant-message'}`;
+            
+            if (isUser) {
+                msgElem.textContent = message;
+            } else {
+                // For assistant messages, add study actions and special formatting
+                const content = document.createElement('div');
+                
+                // Check if it's a quiz
+                if (message.includes('Quiz:') || message.includes('Question:')) {
+                    content.innerHTML = formatQuiz(message);
+                }
+                // Check if it's a math problem
+                else if (message.includes('Solution:') || message.includes('Step')) {
+                    content.innerHTML = formatMath(message);
+                }
+                else {
+                    content.innerHTML = message.replace(/\n/g, '<br>');
+                }
+                
+                msgElem.appendChild(content);
+                
+                if (!isUser && message.length > 50) {
+                    const actions = document.createElement('div');
+                    actions.className = 'study-actions';
+                    actions.innerHTML = `
+                        <button class="action-btn" onclick="copyToClipboard(this)">
+                            <i class="material-icons" style="font-size: 16px;">content_copy</i>
+                            Copy
+                        </button>
+                        <button class="action-btn" onclick="requestExplanation(this)">
+                            <i class="material-icons" style="font-size: 16px;">help_outline</i>
+                            Explain More
+                        </button>
+                        <button class="action-btn" onclick="createQuiz(this)">
+                            <i class="material-icons" style="font-size: 16px;">quiz</i>
+                            Make Quiz
+                        </button>
+                        <button class="action-btn" onclick="getExamples(this)">
+                            <i class="material-icons" style="font-size: 16px;">lightbulb</i>
+                            Examples
+                        </button>
+                    `;
+                    msgElem.appendChild(actions);
+                }
+            }
+            
+            chatbox.appendChild(msgElem);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function formatQuiz(message) {
+            // Simple quiz formatting - in a real app, this would be more sophisticated
+            if (message.includes('A)') && message.includes('B)')) {
+                const parts = message.split('\n');
+                let formatted = '<div class="quiz-container">';
+                
+                for (let part of parts) {
+                    if (part.includes('Question:') || part.includes('Quiz:')) {
+                        formatted += `<div class="quiz-question">${part}</div>`;
+                    } else if (part.match(/^[A-D]\)/)) {
+                        formatted += `<div class="quiz-option" onclick="selectOption(this)">${part}</div>`;
+                    } else if (part.trim()) {
+                        formatted += `<div>${part}</div>`;
+                    }
+                }
+                
+                formatted += '</div>';
+                return formatted;
+            }
+            return message.replace(/\n/g, '<br>');
+        }
+
+        function formatMath(message) {
+            if (message.includes('Solution:') || message.includes('Step')) {
+                return `<div class="math-container">
+                    <div class="math-problem">${message.split('Solution:')[0] || message.split('Step')[0]}</div>
+                    <div class="math-solution">${message.replace(/\n/g, '<br>')}</div>
+                </div>`;
+            }
+            return message.replace(/\n/g, '<br>');
+        }
+
+        function selectOption(option) {
+            // Remove previous selections
+            const options = option.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            option.classList.add('selected');
+        }
+
+        function copyToClipboard(button) {
+            const messageText = button.closest('.chat-message').querySelector('div').textContent;
+            navigator.clipboard.writeText(messageText).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="material-icons" style="font-size: 16px;">check</i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        function requestExplanation(button) {
+            const messageText = button.closest('.chat-message').querySelector('div').textContent;
+            chatInput.value = "Explain this in more detail: " + messageText.substring(0, 100) + "...";
+            sendMessage();
+        }
+
+        function createQuiz(button) {
+            const messageText = button.closest('.chat-message').querySelector('div').textContent;
+            chatInput.value = "Create a quiz about: " + messageText.substring(0, 100) + "...";
+            sendMessage();
+        }
+
+        function getExamples(button) {
+            const messageText = button.closest('.chat-message').querySelector('div').textContent;
+            chatInput.value = "Give me examples related to: " + messageText.substring(0, 100) + "...";
+            sendMessage();
+        }
+
+        async function callApi(apiUrl, prompt) {
+            if (!isOnline) {
+                offlineDialog.style.display = 'flex';
+                return null;
+            }
+
+            typingIndicator.style.display = 'flex';
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        prompt: "You are StudyBot, a helpful personal tutor for secondary and university students. Provide clear explanations, create engaging quizzes, solve math problems step-by-step, and offer effective study strategies. Always be encouraging and supportive. " + prompt
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return null;
+            } finally {
+                typingIndicator.style.display = 'none';
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            if (!isOnline) {
+                offlineDialog.style.display = 'flex';
+                return;
+            }
+
+            displayMessage(message, true);
+            chatInput.value = '';
+
+            const apiUrl = 'https://backend.buildpicoapps.com/aero/run/llm-api?pk=v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==';
+
+            try {
+                const data = await callApi(apiUrl, message);
+                if (data && data.status === 'success') {
+                    displayMessage(data.text, false);
+                } else {
+                    displayMessage('Sorry, I encountered an error while processing your request. Please try again or check your internet connection.', false);
+                } 
+            } catch (error) {
+                console.error('Error:', error);
+                if (!isOnline) {
+                    offlineDialog.style.display = 'flex';
+                } else {
+                    displayMessage('Network error. Please check your connection and try again.', false);
+                }
+            }
+        }
+
+        chatInput.focus();
+
+        sendButton.addEventListener('click', sendMessage);
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Periodic connection check
+        setInterval(checkConnection, 5000);
+    </script>
+</body>
+</html>
